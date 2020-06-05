@@ -11,18 +11,16 @@ const store = {
 };
 
 const generateItemElement = function (item) {
-  let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
+  let itemTitle = `<input type="text" class='shopping-item shopping-item__checked' contenteditable="true" value='${item.name}'>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
+     <input type="text" class='shopping-item' contenteditable="true" value="${item.name}">
     `;
   }
 
   return `
     <li class='js-item-element' data-item-id='${item.id}'>
-      <div id='js-title' contenteditable="true">
-        ${itemTitle}
-      </div>
+      ${itemTitle}
       <div class='shopping-item-controls'>
         <button class='shopping-item-toggle js-item-toggle'>
           <span class='button-label'>check</span>
@@ -98,20 +96,20 @@ const handleItemCheckClicked = function () {
 const handleItemNameClicked = function () {
   $('.js-shopping-list').on('keyup', '.js-item-element', event => {
     const id = getItemIdFromElement(event.currentTarget);
-    storeEditedListItem(id);
-  });
-};
 
-const handleClickOutsideEditBox = function () {
-  $(document).click(() => {
-    $('#js-title').focus().blur(() => { render(); });
+    const foundItem = store.items.find(item => item.id === id);
+    const userInput = $(this).find('input').val();
+    //foundItem.name = userInput.replace(/(\r\n|\n|\r)/gm, '').trim();
+
+    console.log(userInput);
+    console.log(foundItem.name);
+
+    //storeEditedListItem(id);
   });
 };
 
 const storeEditedListItem = function (id) {
-  const foundItem = store.items.find(item => item.id === id);
-  const userInput = document.getElementById('js-title').textContent;
-  foundItem.name = userInput.replace(/(\r\n|\n|\r)/gm, '').trim();
+
 };
 
 const getItemIdFromElement = function (item) {
@@ -186,7 +184,6 @@ const handleShoppingList = function () {
   handleDeleteItemClicked();
   handleToggleFilterClick();
   handleItemNameClicked();
-  handleClickOutsideEditBox();
 };
 
 // when the page loads, call `handleShoppingList`
