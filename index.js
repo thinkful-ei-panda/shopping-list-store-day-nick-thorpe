@@ -1,3 +1,5 @@
+'use strict';
+
 const store = {
   items: [
     { id: cuid(), name: 'apples', checked: false },
@@ -18,7 +20,9 @@ const generateItemElement = function (item) {
 
   return `
     <li class='js-item-element' data-item-id='${item.id}'>
-      ${itemTitle}
+      <div id='js-title' contenteditable="true">
+        ${itemTitle}
+      </div>
       <div class='shopping-item-controls'>
         <button class='shopping-item-toggle js-item-toggle'>
           <span class='button-label'>check</span>
@@ -58,6 +62,8 @@ const render = function () {
    */
   const shoppingListItemsString = generateShoppingItemsString(items);
 
+  console.log(store.items);
+
   // insert that HTML into the DOM
   $('.js-shopping-list').html(shoppingListItemsString);
 };
@@ -87,6 +93,25 @@ const handleItemCheckClicked = function () {
     toggleCheckedForListItem(id);
     render();
   });
+};
+
+const handleItemNameClicked = function () {
+  $('.js-shopping-list').on('keyup', '.js-item-element', event => {
+    const id = getItemIdFromElement(event.currentTarget);
+    storeEditedListItem(id);
+  });
+};
+
+const handleClickOutsideEditBox = function () {
+  $(document).click(() => {
+    $('#js-title').focus().blur(() => { render(); });
+  });
+};
+
+const storeEditedListItem = function (id) {
+  const foundItem = store.items.find(item => item.id === id);
+  const userInput = document.getElementById('js-title').textContent;
+  foundItem.name = userInput.replace(/(\r\n|\n|\r)/gm, '').trim();
 };
 
 const getItemIdFromElement = function (item) {
@@ -160,6 +185,8 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleItemNameClicked();
+  handleClickOutsideEditBox();
 };
 
 // when the page loads, call `handleShoppingList`
