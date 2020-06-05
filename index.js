@@ -96,21 +96,12 @@ const handleItemCheckClicked = function () {
 const handleItemNameClicked = function () {
   $('.js-shopping-list').on('keyup', '.js-item-element', event => {
     const id = getItemIdFromElement(event.currentTarget);
-
     const foundItem = store.items.find(item => item.id === id);
-    const userInput = $(this).find('input').val();
-    //foundItem.name = userInput.replace(/(\r\n|\n|\r)/gm, '').trim();
-
-    console.log(userInput);
-    console.log(foundItem.name);
-
-    //storeEditedListItem(id);
+    const userInput = $(event.currentTarget).children('input').val();
+    foundItem.name = userInput;
   });
 };
 
-const storeEditedListItem = function (id) {
-
-};
 
 const getItemIdFromElement = function (item) {
   return $(item)
